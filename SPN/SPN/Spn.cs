@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SPN
 {
-    class Spn
+    class Spn : IMode
     {
         public int R { get; private set; }
         public int N { get; private set; }
@@ -44,15 +44,9 @@ namespace SPN
             {
                 _roundKeys.Add(i, Key.Substring((RoundKeyPosition * i), RoundKeyLength));
             }
-
-            Console.WriteLine("Runden-Schlüssel:");
-            foreach (var roundKey in _roundKeys)
-            {
-                Console.WriteLine(roundKey);
-            }
         }
 
-        public void Encrypt(string textToEncrypt)
+        public string Encrypt(string textToEncrypt)
         {
             // Initial Step
             string x = Helper.XorStrings(textToEncrypt, _roundKeys[0]);
@@ -71,6 +65,13 @@ namespace SPN
             // Short Step
             x = Helper.WordSubstitution(x, SBox);
             x = Helper.XorStrings(x, _roundKeys[R]);
+
+            return x;
+        }
+
+        public string Decrypt(string text)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -62,8 +62,10 @@ namespace SPN
                 { 15, 15 }
             };
 
-            Spn mySpn = new Spn(4, 4, 4, 32, "00010001001010001000110000000000", 16, 4, sbox, bitPermutation);
-            mySpn.Encrypt("0001001010001111");
+            //Spn mySpn = new Spn(4, 4, 4, 32, "00010001001010001000110000000000", 16, 4, sbox, bitPermutation);
+            //mySpn.Encrypt("0001001010001111");
+
+            // string[] stringsForCtr = Helper.PrepareStringCharsForCtr("fisch");
         }
     }
 }

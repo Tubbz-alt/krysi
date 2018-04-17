@@ -54,6 +54,28 @@ namespace SPN
             return resultBuilder.ToString();
         }
 
+        public static string[] PrepareStringCharsForCtr(string value)
+        {
+            // Convert the string into a byte[].
+            byte[] bytearray = Encoding.ASCII.GetBytes(value);
+            string[] result = new string[bytearray.Length];
+
+            for (int i = 0; i < bytearray.Length; i++)
+            {
+                string binaryString = Convert.ToString(Convert.ToInt32(bytearray[i]), 2);
+                string insert = binaryString.Insert(0, "1");
+
+                while ((insert.Length) % 16 != 0)
+                {
+                    insert = insert.Insert(0, "0");
+                }
+
+                result[i] = insert;
+            }
+
+            return result;
+        }
+
         private static IEnumerable<string> SplitInParts(string str, int chunkSize)
         {
             return Enumerable.Range(0, str.Length / chunkSize).Select(i => str.Substring(i * chunkSize, chunkSize));
