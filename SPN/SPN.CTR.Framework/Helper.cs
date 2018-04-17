@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SPN
+namespace SPN.CTR.Framework
 {
-    static class Helper
+    public static class Helper
     {
         /// <summary>
         /// Mit dieser Methode ist es möglich, 2 Strings direkt zu XOREN. Die XOR-Operation wird dabei auf den einzelnen Character angewendet.

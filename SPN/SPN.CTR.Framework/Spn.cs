@@ -5,7 +5,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SPN
+namespace SPN.CTR.Framework
 {
     class Spn : IMode
     {

@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SPN
+namespace SPN.CTR.Framework
 {
-    class Ctr
+    public interface IMode
     {
+        string Encrypt(string text);
+        string Decrypt(string text);
     }
 }
