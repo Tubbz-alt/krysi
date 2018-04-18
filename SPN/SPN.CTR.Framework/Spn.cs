@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SPN.CTR.Framework
 {
-    public class Spn : IMode
+    public class Spn
     {
         public int R { get; private set; }
         public int N { get; private set; }

@@ -93,7 +93,7 @@ namespace SPN.CTR.Framework
         /// <param name="text">String, welcher gesplittet werden soll</param>
         /// <param name="chunkSize">Grösse der Blöcke</param>
         /// <returns>IEnumerable von einem String-Type</returns>
-        private static IEnumerable<string> SplitInParts(string text, int chunkSize)
+        public static IEnumerable<string> SplitInParts(string text, int chunkSize)
         {
             return Enumerable.Range(0, text.Length / chunkSize).Select(i => text.Substring(i * chunkSize, chunkSize));
         }
@@ -104,7 +104,7 @@ namespace SPN.CTR.Framework
         /// </summary>
         /// <param name="stringArray">String-Array, welches konveritert werden soll</param>
         /// <returns>String</returns>
-        private static string ConvertStringArrayToString(string[] stringArray)
+        public static string ConvertStringArrayToString(string[] stringArray)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -114,6 +114,27 @@ namespace SPN.CTR.Framework
             }
 
             return sb.ToString();
+        }
+
+        public static string ConvertStringToGoodShape(string text)
+        {
+            text = text.Insert(0, "1");
+            while (text.Length % 16 != 0)
+            {
+                text = text.Insert(0, "0");
+            }
+
+            return text;
+        }
+
+        public static string RemovePadding(this string value, string a)
+        {
+            int posA = value.IndexOf(a);
+            if (posA == -1)
+            {
+                return "";
+            }
+            return value.Substring(posA+1);
         }
     }
 }
