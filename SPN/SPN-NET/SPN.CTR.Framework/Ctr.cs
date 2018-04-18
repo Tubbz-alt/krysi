@@ -34,7 +34,7 @@ namespace SPN.CTR.Framework
             // Entferne y[n-1] von der Liste
             parts.RemoveAt(0);
 
-            resultList.Add(yMinusOne);
+            //resultList.Add(yMinusOne);
 
             for (int i = 0; i < parts.Count; i++)
             {

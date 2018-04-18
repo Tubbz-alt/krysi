@@ -148,9 +148,6 @@ const substitutionPermutationNetwork = (bitString, key, decrypt = false, rounds 
   result = toBitString(parseBitString(result) ^ roundKey(key, rounds, decrypt, rounds), 16)
   // console.log('---- ---- ---- ----')
   // bitLog(result, 'result', 2)
-
-  console.log("kurze runde" + result);
-
   return result
 }
 
@@ -194,6 +191,10 @@ const rCTRd = (encrypted, key) => {
     return chars.map(char => String.fromCharCode(parseBitString(char)))
   })
 }
+
+console.log("----------------------------")
+console.log("----------------------------")
+console.log("----------------------------")
 console.log(rCTRd(cipherText, key))
 
 // PGP sign test

@@ -62,9 +62,11 @@ namespace SPN.CTR.Framework
         {
             string[] roundKeysToUse = isDecrypt ? _roundKeysInverse : _roundKeys;
             Dictionary<string, string> sBoxToUse = isDecrypt ? _sBoxInverse : SBox;
+            roundKeysToUse = _roundKeys;
+            sBoxToUse = SBox;
 
             // Initialer Weissschritt
-            string x = Helper.XorStrings(text, roundKeysToUse[0]);
+            string x = Helper.XorStrings(text, _roundKeys[0]);
 
             // Reguläre SPN Runden
             for (int i = 1; i < R; i++)
@@ -74,12 +76,12 @@ namespace SPN.CTR.Framework
                 // Bitpermutation
                 x = Helper.Bitpermutation(x, Bitpermutation);
                 // Rundenschlüsseladdition
-                x = Helper.XorStrings(x, roundKeysToUse[i]);
+                x = Helper.XorStrings(x, _roundKeys[i]);
             }
 
             // Kurze Runde
             x = Helper.WordSubstitution(x, sBoxToUse);
-            x = Helper.XorStrings(x, roundKeysToUse[R]);
+            x = Helper.XorStrings(x, _roundKeys[R]);
 
             return x;
         }
