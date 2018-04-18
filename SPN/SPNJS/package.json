@@ -1,0 +1,21 @@
+{
+  "name": "krysi-spn-ctr-decrypt",
+  "version": "0.0.1",
+  "description": "Manual decryption of an encrypted bitstring with rsa-ctr algorythm",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "spn",
+    "rsa",
+    "ctr",
+    "crypto"
+  ],
+  "author": "Simon Schmid <simon.schmid@students.fhnw.ch>",
+  "license": "ISC",
+  "devDependencies": {
+    "standard": "^9.0.2"
+  }
+}

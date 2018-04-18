@@ -29,15 +29,18 @@ namespace SPN.CTR.Framework
             List<string> resultList = new List<string>();
 
             // Zerlege y in Blöcke der Länge L
-            string[] parts = Helper.SplitInParts(text, L).ToArray();
+            List<string> parts = Helper.SplitInParts(text, L).ToList();
             string yMinusOne = parts[0];
+            // Entferne y[n-1] von der Liste
+            parts.RemoveAt(0);
+
             resultList.Add(yMinusOne);
 
-            for (int i = 1; i < parts.Length; i++)
+            for (int i = 0; i < parts.Count; i++)
             {
                 // (y-1) + 0 + 1 + n-1
-                int yResult = Convert.ToInt32((Convert.ToInt32(yMinusOne, 2) + (i - 1)) % Math.Pow(2, L));
-                string binaryStringYResult = Helper.ConvertStringToGoodShape(Convert.ToString(yResult, 2));
+                int yResult = Convert.ToInt32((Convert.ToInt32(yMinusOne, 2) + i) % Math.Pow(2, L));
+                string binaryStringYResult = Convert.ToString(yResult, 2).PadLeft(16, '0');
 
                 // Entschlüsselung vom binaryStringYResult mit dem SPN und dem Key
                 string spnResult = _spn.Decrypt(binaryStringYResult);
@@ -46,6 +49,7 @@ namespace SPN.CTR.Framework
                 string xi = Helper.XorStrings(spnResult, parts[i]);
                 resultList.Add(xi);
             }
+
 
             return resultList;
         }
