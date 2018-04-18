@@ -14,14 +14,14 @@ namespace SPN.CTR.Framework
         public int M { get; private set; }
         public int S { get; private set; }
         public string Key { get; private set; }
-        public int RoundKeyLength { get; private set; }
         public int RoundKeyPosition { get; private set; }
         public Dictionary<string, string> SBox { get; private set; }
         public Dictionary<int, int> Bitpermutation { get; private set; }
         private string[] _roundKeys;
         private string[] _roundKeysInverse;
+        private Dictionary<string, string> _sBoxInverse;
 
-        public Spn(int r, int n, int m, int s, string key, int roundKeyLength, int roundKeyPosition,
+        public Spn(int r, int n, int m, int s, string key, int roundKeyPosition,
             Dictionary<string, string> sBox, Dictionary<int, int> bitpermutation)
         {
             R = r;
@@ -29,9 +29,9 @@ namespace SPN.CTR.Framework
             M = m;
             S = s;
             Key = key ?? throw new ArgumentNullException(nameof(key));
-            RoundKeyLength = roundKeyLength;
             RoundKeyPosition = roundKeyPosition;
             SBox = sBox ?? throw new ArgumentNullException(nameof(sBox));
+            _sBoxInverse = sBox == null ? throw new ArgumentNullException(nameof(sBox)) : sBox.ToDictionary(kp => kp.Value, kp => kp.Key);
             Bitpermutation = bitpermutation;
 
             // Initialisiere Objekte
@@ -39,30 +39,12 @@ namespace SPN.CTR.Framework
             _roundKeysInverse = new string[R + 1];
         }
 
-        public string Encrypt(string textToEncrypt)
+        public string Encrypt(string text)
         {
             // Calculate Round Keys
             CalculateRoundKeys();
 
-            // Initial Step
-            string x = Helper.XorStrings(textToEncrypt, _roundKeys[0]);
-
-            // Normal SPN Steps
-            for (int i = 1; i < R; i++)
-            {
-                // Substitution
-                x = Helper.WordSubstitution(x, SBox);
-                // Bitpermutation
-                x = Helper.Bitpermutation(x, Bitpermutation);
-                // Rundenschlüsseladdition
-                x = Helper.XorStrings(x, _roundKeys[i]);
-            }
-
-            // Short Step
-            x = Helper.WordSubstitution(x, SBox);
-            x = Helper.XorStrings(x, _roundKeys[R]);
-
-            return x;
+            return SpnEncryptDecrypt(text);
         }
 
         public string Decrypt(string text)
@@ -73,8 +55,33 @@ namespace SPN.CTR.Framework
             // Berechnung der inversen Rundenschlüssel
             CalculateRoundKeysInverse();
 
+            return SpnEncryptDecrypt(text, true);
+        }
 
-            return String.Empty;
+        private string SpnEncryptDecrypt(string text, bool isDecrypt = false)
+        {
+            string[] roundKeysToUse = isDecrypt ? _roundKeysInverse : _roundKeys;
+            Dictionary<string, string> sBoxToUse = isDecrypt ? _sBoxInverse : SBox;
+
+            // Initialer Weissschritt
+            string x = Helper.XorStrings(text, roundKeysToUse[0]);
+
+            // Reguläre SPN Runden
+            for (int i = 1; i < R; i++)
+            {
+                // Substitution
+                x = Helper.WordSubstitution(x, sBoxToUse);
+                // Bitpermutation
+                x = Helper.Bitpermutation(x, Bitpermutation);
+                // Rundenschlüsseladdition
+                x = Helper.XorStrings(x, roundKeysToUse[i]);
+            }
+
+            // Kurze Runde
+            x = Helper.WordSubstitution(x, sBoxToUse);
+            x = Helper.XorStrings(x, roundKeysToUse[R]);
+
+            return x;
         }
 
         /// <summary>
@@ -86,7 +93,7 @@ namespace SPN.CTR.Framework
 
             for (int i = 0; i <= R; i++)
             {
-                _roundKeys[i] = Key.Substring((RoundKeyPosition * i), RoundKeyLength);
+                _roundKeys[i] = Key.Substring((RoundKeyPosition * i), (M * N));
             }
         }
 
@@ -105,7 +112,7 @@ namespace SPN.CTR.Framework
                 }
                 else
                 {
-                    _roundKeysInverse[i] = _roundKeys[_roundKeys.Length - (i+1)];
+                    _roundKeysInverse[i] = _roundKeys[_roundKeys.Length - (i + 1)];
                 }
             }
         }
