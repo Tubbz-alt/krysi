@@ -61,6 +61,8 @@ namespace SPN.Console
             Ctr ctr = new Ctr("00111010100101001101011000111111", 16, mySpn);
             string[] plainText = ctr.Decrypt("00000100110100100000101110111000000000101000111110001110011111110110000001010001010000111010000000010011011001110010101110110000").ToArray();
 
+
+            // Try to convert that shit back
             int[] intArray = new int[plainText.Length];
 
             for (int i = 1; i < plainText.Length; i++)
