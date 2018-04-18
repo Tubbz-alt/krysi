@@ -26,29 +26,39 @@ namespace SPN.CTR.Framework
             return sb.ToString();
         }
 
-        public static string WordSubstitution(string s, Dictionary<string, string> sBox)
+        /// <summary>
+        /// Führt eine Wortsubstitution von einem String mit einer mitgegebenen sBox durch
+        /// </summary>
+        /// <param name="text">String, welcher Wort-substituiert werden soll</param>
+        /// <param name="sBox">SBox, wird für Substitution benötigt</param>
+        /// <returns></returns>
+        public static string WordSubstitution(string text, Dictionary<string, string> sBox)
         {
-            string[] stringParts = SplitInParts(s, 4).ToArray();
+            string[] stringParts = SplitInParts(text, 4).ToArray();
 
             for (int i = 0; i < stringParts.Length; i++)
             {
                 stringParts[i] = sBox[stringParts[i]];
             }
 
-            return MakeFlatString(stringParts);
+            return ConvertStringArrayToString(stringParts);
         }
 
-        public static string Bitpermutation(string s, Dictionary<int, int> bitpermutation)
+        /// <summary>
+        /// Führt eine Bitpermutation für einen String mit einer mitgegebenen Bit-Box aus
+        /// </summary>
+        /// <param name="text">String, welcher permutiert werden soll</param>
+        /// <param name="bitpermutation">Bit-Box, welche die Positionen für die Bit-Permutation beinhaltet</param>
+        /// <returns></returns>
+        public static string Bitpermutation(string text, Dictionary<int, int> bitpermutation)
         {
-            string copyOriginal = string.Copy(s);
-            var resultBuilder = new StringBuilder(s);
+            var resultBuilder = new StringBuilder(text);
 
-            for (int i = 0; i < s.Length; i++)
+            for (int i = 0; i < text.Length; i++)
             {
-                char value = copyOriginal[i];
-                int pos = bitpermutation[i];
-                resultBuilder.Remove(pos, 1);
-                resultBuilder.Insert(pos, s[i]);
+                int position = bitpermutation[i];
+                resultBuilder.Remove(position, 1);
+                resultBuilder.Insert(position, text[i]);
             }
 
             return resultBuilder.ToString();
@@ -76,12 +86,25 @@ namespace SPN.CTR.Framework
             return result;
         }
 
-        private static IEnumerable<string> SplitInParts(string str, int chunkSize)
+        /// <summary>
+        /// Teilt einen String in Blöcke mit gleicher Länge auf.
+        /// Die Länge wird dabei der Methode mitgegeben
+        /// </summary>
+        /// <param name="text">String, welcher gesplittet werden soll</param>
+        /// <param name="chunkSize">Grösse der Blöcke</param>
+        /// <returns>IEnumerable von einem String-Type</returns>
+        private static IEnumerable<string> SplitInParts(string text, int chunkSize)
         {
-            return Enumerable.Range(0, str.Length / chunkSize).Select(i => str.Substring(i * chunkSize, chunkSize));
+            return Enumerable.Range(0, text.Length / chunkSize).Select(i => text.Substring(i * chunkSize, chunkSize));
         }
 
-        private static string MakeFlatString(string[] stringArray)
+        /// <summary>
+        /// Konvertiert String-Array zu einem "flachen" String
+        /// Result-String enthält keine Trennzeichen oder Whitespaces
+        /// </summary>
+        /// <param name="stringArray">String-Array, welches konveritert werden soll</param>
+        /// <returns>String</returns>
+        private static string ConvertStringArrayToString(string[] stringArray)
         {
             StringBuilder sb = new StringBuilder();
 
