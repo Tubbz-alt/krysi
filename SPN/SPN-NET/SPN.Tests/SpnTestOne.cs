@@ -5,7 +5,7 @@ using Xunit;
 
 namespace SPN.Tests
 {
-    public class SpnTestOne
+    public class SpnTestOne : IDisposable
     {
         private Spn spn;
         private int _r;
@@ -79,6 +79,21 @@ namespace SPN.Tests
         public void SpnWithDataFromLectureOneDecryptTest()
         {
             Assert.Equal(_plainText, spn.Decrypt(spn.Encrypt(_plainText)));
+        }
+
+        public void Dispose()
+        {
+            spn = null;
+            _r = default(int);
+            _n = default(int);
+            _m = default(int);
+            _s = default(int);
+            _key = default(string);
+            _roundKeyPosition = default(int);
+            _sbox = null;
+            _bitPermutation = null;
+            _plainText = default(string);
+            _chiffretext = default(string);
         }
     }
 }
