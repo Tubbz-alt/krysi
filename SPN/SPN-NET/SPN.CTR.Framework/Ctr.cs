@@ -21,7 +21,31 @@ namespace SPN.CTR.Framework
 
         public string Encrypt(string text)
         {
-            return String.Empty;
+            string stringArray = Helper.PrepareStringForCtr(text, L);
+
+            // For testing purposes, use "0000010011010010".
+            String yMinusOne = Helper.RandomY(16);
+
+            // Ausgangs-String in Teile aufteilen
+            string[] parts = Helper.SplitInParts(stringArray, L).ToArray();
+            List<string> resultList = new List<string>();
+            resultList.Add(yMinusOne);
+
+            for (int i = 0; i < parts.Length; i++)
+            {
+                // (y-1) + 0 + 1 + n-1
+                int yResult = Convert.ToInt32((Convert.ToInt32(yMinusOne, 2) + i) % Math.Pow(2, L));
+                string binaryStringYResult = Convert.ToString(yResult, 2).PadLeft(16, '0');
+
+                // Entschlüsselung vom binaryStringYResult mit dem SPN und dem Key
+                string spnResult = _spn.Decrypt(binaryStringYResult, false);
+
+                // XOR spnResult mit y0, y1, yn-1 values
+                string xi = Helper.XorStrings(spnResult, parts[i]);
+                resultList.Add(xi);
+            }
+
+            return string.Join(String.Empty, resultList);
         }
 
         public IEnumerable<string> Decrypt(string text, bool isDecryptAfterEncrypt)
@@ -31,6 +55,7 @@ namespace SPN.CTR.Framework
             // Zerlege y in Blöcke der Länge L
             List<string> parts = Helper.SplitInParts(text, L).ToList();
             string yMinusOne = parts[0];
+
             // Entferne y[n-1] von der Liste
             parts.RemoveAt(0);
 

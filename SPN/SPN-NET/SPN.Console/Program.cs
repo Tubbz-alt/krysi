@@ -11,8 +11,6 @@ namespace SPN.Console
 {
     class Program
     {
-        static readonly Regex binary = new Regex("^[01]{1,32}$", RegexOptions.Compiled);
-
         static void Main(string[] args)
         {
             // SBox
@@ -63,8 +61,15 @@ namespace SPN.Console
 
             string result = Helper.ConvertStringArrayToString(plainText);
 
+            Spn mySpn2 = new Spn(4, 4, 4, 32, "00111010100101001101011000111111", 4, sbox, bitPermutation);
+            Ctr ctr2 = new Ctr("00111010100101001101011000111111", 16, mySpn2);
+            string result2 = ctr2.Encrypt(result);
+
             var data = Helper.GetBytesFromBinaryString(result);
             var text = Encoding.ASCII.GetString(data);
+
+            System.Console.WriteLine(text);
+
 
             System.Console.ReadLine();
         }

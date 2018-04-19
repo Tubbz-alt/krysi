@@ -64,26 +64,19 @@ namespace SPN.CTR.Framework
             return resultBuilder.ToString();
         }
 
-        public static string[] PrepareStringCharsForCtr(string value)
+        public static string PrepareStringForCtr(string value, int length)
         {
-            // Convert the string into a byte[].
-            byte[] bytearray = Encoding.ASCII.GetBytes(value);
-            string[] result = new string[bytearray.Length];
-
-            for (int i = 0; i < bytearray.Length; i++)
+            if (value.Length % length != 0)
             {
-                string binaryString = Convert.ToString(Convert.ToInt32(bytearray[i]), 2);
-                string insert = binaryString.Insert(0, "1");
-
-                while ((insert.Length) % 16 != 0)
-                {
-                    insert = insert.Insert(0, "0");
-                }
-
-                result[i] = insert;
+                value = value.Insert(0, "1");
             }
 
-            return result;
+            while (value.Length % length != 0)
+            {
+                value = value.Insert(0, "0");
+            }
+
+            return value;
         }
 
         /// <summary>
@@ -134,7 +127,7 @@ namespace SPN.CTR.Framework
             {
                 return "";
             }
-            return value.Substring(posA+1);
+            return value.Substring(posA + 1);
         }
 
         public static Byte[] GetBytesFromBinaryString(String binary)
@@ -149,6 +142,19 @@ namespace SPN.CTR.Framework
             }
 
             return list.ToArray();
+        }
+
+        public static string RandomY(int length)
+        {
+            StringBuilder sb = new StringBuilder();
+            Random r = new Random();
+
+            for (int i = 0; i < length; i++)
+            {
+                sb.Append(r.Next(2));
+            }
+
+            return sb.ToString();
         }
     }
 }
