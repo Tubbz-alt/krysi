@@ -5,7 +5,7 @@ using Xunit;
 
 namespace SPN.Tests
 {
-    public class SpnTestOne : IDisposable
+    public class SpnOneTest : IDisposable
     {
         private Spn spn;
         private int _r;
@@ -19,7 +19,7 @@ namespace SPN.Tests
         private string _plainText;
         private string _chiffretext;
 
-        public SpnTestOne()
+        public SpnOneTest()
         {
             _m = 3;
             _n = 4;
