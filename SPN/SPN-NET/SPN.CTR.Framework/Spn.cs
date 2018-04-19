@@ -10,6 +10,7 @@ namespace SPN.CTR.Framework
 {
     public class Spn
     {
+        // Properties
         public int R { get; private set; }
         public int N { get; private set; }
         public int M { get; private set; }
@@ -22,6 +23,7 @@ namespace SPN.CTR.Framework
         private string[] _roundKeysInverse;
         private Dictionary<string, string> _sBoxInverse;
 
+        // Ctor
         public Spn(int r, int n, int m, int s, string key, int roundKeyPosition,
             Dictionary<string, string> sBox, Dictionary<int, int> bitpermutation)
         {
@@ -40,27 +42,44 @@ namespace SPN.CTR.Framework
             _roundKeysInverse = new string[R + 1];
         }
 
+        /// <summary>
+        /// Verschlüsselt einen Klartext mit einem SPN
+        /// </summary>
+        /// <param name="text">Klartext, welcher verschlüsselt werden sol</param>
+        /// <returns>Chiffretext als String</returns>
         public string Encrypt(string text)
         {
-            // Calculate Round Keys
+            // Rundenschlüssel berechnen
             CalculateRoundKeys();
-
+            // Aufruf des Verschlüsselungs-Algo.
             return SpnEncryptDecrypt(text);
         }
 
+        /// <summary>
+        /// Entschlüsselt einen mit SPN verschlüsselten Chiffretext zu Klartext
+        /// </summary>
+        /// <param name="text">Chiffretext als String</param>
+        /// <param name="isDecryptAfterEncrypt">Gibt an, ob direkt nach Verschlüsselung erneut Entschlüsselt wird</param>
+        /// <returns>Klartext</returns>
         public string Decrypt(string text, bool isDecryptAfterEncrypt)
         {
-            // Berechnung der initialen Rundenschlüssel
+            // Berechnung der initialen Rundenschlüssel, auf welchen die Rundenschlüssel für Decrypt beruhen
             CalculateRoundKeys();
-
-            // Berechnung der inversen Rundenschlüssel
+            // Berechnung der Decrypt Rundenschlüssel
             CalculateRoundKeysInverse();
-
+            // Aufruf des Entschlüsselungs-Algo.
             return SpnEncryptDecrypt(text, isDecryptAfterEncrypt);
         }
 
+        /// <summary>
+        /// Verschlüsselungs und Entschlüsselungs-Methode für ein SPN (Verschlüsselung funktioniert gleich wie Entschlüsselung)
+        /// </summary>
+        /// <param name="text">Text, welcher ver-entschlüsselt werden soll</param>
+        /// <param name="isDecrypt">Boolean gibt an, ob es eine Ver-oder Entschlüsselung ist</param>
+        /// <returns>Ver-Entschlüsselter Text als String</returns>
         private string SpnEncryptDecrypt(string text, bool isDecrypt = false)
         {
+            // Entscheide, welche Rundenschlüssel und welche SBox gebraucht werden
             string[] roundKeysToUse = isDecrypt ? _roundKeysInverse : _roundKeys;
             Dictionary<string, string> sBoxToUse = isDecrypt ? _sBoxInverse : SBox;
 
