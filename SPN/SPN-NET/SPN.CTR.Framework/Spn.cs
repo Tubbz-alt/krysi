@@ -47,7 +47,7 @@ namespace SPN.CTR.Framework
             return SpnEncryptDecrypt(text);
         }
 
-        public string Decrypt(string text)
+        public string Decrypt(string text, bool isDecryptAfterEncrypt)
         {
             // Berechnung der initialen Rundenschlüssel
             CalculateRoundKeys();
@@ -55,18 +55,16 @@ namespace SPN.CTR.Framework
             // Berechnung der inversen Rundenschlüssel
             CalculateRoundKeysInverse();
 
-            return SpnEncryptDecrypt(text, true);
+            return SpnEncryptDecrypt(text, isDecryptAfterEncrypt);
         }
 
         private string SpnEncryptDecrypt(string text, bool isDecrypt = false)
         {
             string[] roundKeysToUse = isDecrypt ? _roundKeysInverse : _roundKeys;
             Dictionary<string, string> sBoxToUse = isDecrypt ? _sBoxInverse : SBox;
-            roundKeysToUse = _roundKeys;
-            sBoxToUse = SBox;
 
             // Initialer Weissschritt
-            string x = Helper.XorStrings(text, _roundKeys[0]);
+            string x = Helper.XorStrings(text, roundKeysToUse[0]);
 
             // Reguläre SPN Runden
             for (int i = 1; i < R; i++)
@@ -76,12 +74,12 @@ namespace SPN.CTR.Framework
                 // Bitpermutation
                 x = Helper.Bitpermutation(x, Bitpermutation);
                 // Rundenschlüsseladdition
-                x = Helper.XorStrings(x, _roundKeys[i]);
+                x = Helper.XorStrings(x, roundKeysToUse[i]);
             }
 
             // Kurze Runde
             x = Helper.WordSubstitution(x, sBoxToUse);
-            x = Helper.XorStrings(x, _roundKeys[R]);
+            x = Helper.XorStrings(x, roundKeysToUse[R]);
 
             return x;
         }

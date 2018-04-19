@@ -82,7 +82,7 @@ namespace SPN.Tests
         [Fact]
         public void SpnWithDataFromSpnTaskDecryptTest()
         {
-            Assert.Equal(_plainText, spn.Decrypt(spn.Encrypt(_plainText)));
+            Assert.Equal(_plainText, spn.Decrypt(spn.Encrypt(_plainText), true));
         }
 
         public void Dispose()

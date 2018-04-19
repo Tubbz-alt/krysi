@@ -24,7 +24,7 @@ namespace SPN.CTR.Framework
             return String.Empty;
         }
 
-        public IEnumerable<string> Decrypt(string text)
+        public IEnumerable<string> Decrypt(string text, bool isDecryptAfterEncrypt)
         {
             List<string> resultList = new List<string>();
 
@@ -43,7 +43,7 @@ namespace SPN.CTR.Framework
                 string binaryStringYResult = Convert.ToString(yResult, 2).PadLeft(16, '0');
 
                 // Entschlüsselung vom binaryStringYResult mit dem SPN und dem Key
-                string spnResult = _spn.Decrypt(binaryStringYResult);
+                string spnResult = _spn.Decrypt(binaryStringYResult, isDecryptAfterEncrypt);
 
                 // XOR spnResult mit y0, y1, yn-1 values
                 string xi = Helper.XorStrings(spnResult, parts[i]);
