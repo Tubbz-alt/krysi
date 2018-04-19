@@ -58,17 +58,10 @@ namespace SPN.Console
 
             Spn mySpn = new Spn(4, 4, 4, 32, "00111010100101001101011000111111", 4, sbox, bitPermutation);
             Ctr ctr = new Ctr("00111010100101001101011000111111", 16, mySpn);
-            string plainText = ctr.Decrypt(@"00000100110100100000101110111000000000101000111110001110011111110110000001010001010000111010000000010011011001110010101110110000", false);
+            string klartext = ctr.Decrypt(@"00000100110100100000101110111000000000101000111110001110011111110110000001010001010000111010000000010011011001110010101110110000", false);
 
-            Spn mySpn2 = new Spn(4, 4, 4, 32, "00111010100101001101011000111111", 4, sbox, bitPermutation);
-            Ctr ctr2 = new Ctr("00111010100101001101011000111111", 16, mySpn2);
-            string result2 = ctr2.Encrypt(plainText);
-
-            var data = plainText.GetBytesFromBinaryString();
-            var text = Encoding.ASCII.GetString(data);
-
-            System.Console.WriteLine(text);
-
+            System.Console.WriteLine("-- Klartext als BitString --");
+            System.Console.WriteLine(klartext);
 
             System.Console.ReadLine();
         }
