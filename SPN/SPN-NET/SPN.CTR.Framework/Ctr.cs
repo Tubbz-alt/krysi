@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SPN.CTR.Framework.ExtensionMethods;
+using SPN.CTR.Framework.Helper;
 
 namespace SPN.CTR.Framework
 {
     public class Ctr
     {
+        // Properties
         public string K { get; private set; }
         public int L { get; private set; }
         private Spn _spn;
 
+        // Ctor
         public Ctr(string k, int l, Spn spn)
         {
             K = k ?? throw new ArgumentNullException(nameof(k));
@@ -21,13 +25,13 @@ namespace SPN.CTR.Framework
 
         public string Encrypt(string text)
         {
-            string stringArray = Helper.PrepareStringForCtr(text, L);
+            string stringArray = CtrHelper.PrepareStringForCtr(text, L);
 
             // For testing purposes, use "0000010011010010".
-            String yMinusOne = Helper.RandomY(16);
+            String yMinusOne = CtrHelper.RandomNumberForCtrMode(16);
 
             // Ausgangs-String in Teile aufteilen
-            string[] parts = Helper.SplitInParts(stringArray, L).ToArray();
+            string[] parts = stringArray.SplitInParts(L).ToArray();
             List<string> resultList = new List<string>();
             resultList.Add(yMinusOne);
 
@@ -41,19 +45,19 @@ namespace SPN.CTR.Framework
                 string spnResult = _spn.Decrypt(binaryStringYResult, false);
 
                 // XOR spnResult mit y0, y1, yn-1 values
-                string xi = Helper.XorStrings(spnResult, parts[i]);
+                string xi = spnResult.Xor(parts[i]);
                 resultList.Add(xi);
             }
 
             return string.Join(String.Empty, resultList);
         }
 
-        public IEnumerable<string> Decrypt(string text, bool isDecryptAfterEncrypt)
+        public string Decrypt(string text, bool isDecryptAfterEncrypt)
         {
             List<string> resultList = new List<string>();
 
             // Zerlege y in Blöcke der Länge L
-            List<string> parts = Helper.SplitInParts(text, L).ToList();
+            List<string> parts = text.SplitInParts(L).ToList();
             string yMinusOne = parts[0];
 
             // Entferne y[n-1] von der Liste
@@ -71,12 +75,11 @@ namespace SPN.CTR.Framework
                 string spnResult = _spn.Decrypt(binaryStringYResult, isDecryptAfterEncrypt);
 
                 // XOR spnResult mit y0, y1, yn-1 values
-                string xi = Helper.XorStrings(spnResult, parts[i]);
+                string xi = spnResult.Xor(parts[i]);
                 resultList.Add(xi);
             }
 
-
-            return resultList;
+            return string.Join(String.Empty, resultList);
         }
     }
 }

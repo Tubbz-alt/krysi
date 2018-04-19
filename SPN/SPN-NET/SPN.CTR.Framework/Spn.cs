@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using SPN.CTR.Framework.ExtensionMethods;
 
 namespace SPN.CTR.Framework
 {
@@ -64,22 +65,22 @@ namespace SPN.CTR.Framework
             Dictionary<string, string> sBoxToUse = isDecrypt ? _sBoxInverse : SBox;
 
             // Initialer Weissschritt
-            string x = Helper.XorStrings(text, roundKeysToUse[0]);
+            string x = text.Xor(roundKeysToUse[0]);
 
             // Reguläre SPN Runden
             for (int i = 1; i < R; i++)
             {
                 // Substitution
-                x = Helper.WordSubstitution(x, sBoxToUse);
+                x = x.WordSubstitution(sBoxToUse);
                 // Bitpermutation
-                x = Helper.Bitpermutation(x, Bitpermutation);
+                x = x.Bitpermutation(Bitpermutation);
                 // Rundenschlüsseladdition
-                x = Helper.XorStrings(x, roundKeysToUse[i]);
+                x = x.Xor(roundKeysToUse[i]);
             }
 
             // Kurze Runde
-            x = Helper.WordSubstitution(x, sBoxToUse);
-            x = Helper.XorStrings(x, roundKeysToUse[R]);
+            x = x.WordSubstitution(sBoxToUse);
+            x = x.Xor(roundKeysToUse[R]);
 
             return x;
         }
@@ -108,7 +109,7 @@ namespace SPN.CTR.Framework
             {
                 if (i != 0 && i != _roundKeys.Length - 1)
                 {
-                    _roundKeysInverse[i] = Helper.Bitpermutation(_roundKeys[_roundKeys.Length - (i + 1)], Bitpermutation);
+                    _roundKeysInverse[i] = _roundKeys[_roundKeys.Length - (i + 1)].Bitpermutation(Bitpermutation);
                 }
                 else
                 {

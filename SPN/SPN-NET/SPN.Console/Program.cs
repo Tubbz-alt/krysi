@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using SPN.CTR.Framework;
+using SPN.CTR.Framework.ExtensionMethods;
 
 namespace SPN.Console
 {
@@ -34,7 +35,7 @@ namespace SPN.Console
                 { "1111", "0111" }
             };
 
-            // Bitpermutation
+            // Bitpermutations-Tabelle
             Dictionary<int, int> bitPermutation = new Dictionary<int, int>()
             {
                 { 0, 0 },
@@ -57,15 +58,13 @@ namespace SPN.Console
 
             Spn mySpn = new Spn(4, 4, 4, 32, "00111010100101001101011000111111", 4, sbox, bitPermutation);
             Ctr ctr = new Ctr("00111010100101001101011000111111", 16, mySpn);
-            string[] plainText = ctr.Decrypt(@"00000100110100100000101110111000000000101000111110001110011111110110000001010001010000111010000000010011011001110010101110110000", false).ToArray();
-
-            string result = Helper.ConvertStringArrayToString(plainText);
+            string plainText = ctr.Decrypt(@"00000100110100100000101110111000000000101000111110001110011111110110000001010001010000111010000000010011011001110010101110110000", false);
 
             Spn mySpn2 = new Spn(4, 4, 4, 32, "00111010100101001101011000111111", 4, sbox, bitPermutation);
             Ctr ctr2 = new Ctr("00111010100101001101011000111111", 16, mySpn2);
-            string result2 = ctr2.Encrypt(result);
+            string result2 = ctr2.Encrypt(plainText);
 
-            var data = Helper.GetBytesFromBinaryString(result);
+            var data = plainText.GetBytesFromBinaryString();
             var text = Encoding.ASCII.GetString(data);
 
             System.Console.WriteLine(text);
