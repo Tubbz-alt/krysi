@@ -63,6 +63,12 @@ namespace SPN.Console
             System.Console.WriteLine("-- Klartext als BitString --");
             System.Console.WriteLine(klartext);
 
+            var data = klartext.GetBytesFromBinaryString();
+            var text = Encoding.ASCII.GetString(data);
+
+            System.Console.WriteLine("-- Klartext als Text --");
+            System.Console.WriteLine(text);
+
             System.Console.ReadLine();
         }
     }

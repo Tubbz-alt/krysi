@@ -95,7 +95,9 @@ namespace SPN.CTR.Framework
                 resultList.Add(xi);
             }
 
-            return string.Join(String.Empty, resultList);
+            string result = string.Join(String.Empty, resultList);
+            // Remove Padding from result Bitstring
+            return result.Substring(0, result.LastIndexOf("1", StringComparison.InvariantCultureIgnoreCase));
         }
     }
 }
